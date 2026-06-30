@@ -28,9 +28,9 @@ cd ./client && npm install
 
 The `.env` file must contain the following variables scheme
 ```conf
-POSTGRES_URI=postgres://<username>:<password>@<hostname>:<port>/blogslist
-TEST_POSTGRES_URI=postgres://<username>:<password>@<hostname>:<port>/test_blogslist
-E2E_POSTGRES_URI=postgres://<username>:<password>@<hostname>:<port>/e2e_blogslist
+DATABASE_URL=postgres://<username>:<password>@<hostname>:<port>/blogslist
+TEST_DATABASE_URL=postgres://<username>:<password>@<hostname>:<port>/test_blogslist
+E2E_DATABASE_URL=postgres://<username>:<password>@<hostname>:<port>/e2e_blogslist
 PORT=3001
 SECRET=<insert_your_secret_passphrase_here>
 DATABASE_SSL=true

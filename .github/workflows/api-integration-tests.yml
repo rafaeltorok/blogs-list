@@ -43,7 +43,7 @@ jobs:
       - name: Run Integration tests
         run: npm run test
         env:
-          TEST_POSTGRES_URI: postgresql://postgres:postgres@localhost:5432/test_db
+          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           PORT: 3001
           SECRET: test_secret
           DATABASE_SSL: false

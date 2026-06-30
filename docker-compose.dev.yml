@@ -34,7 +34,7 @@ services:
       - ./server:/usr/src/app/server
       - server_node_modules:/usr/src/app/server/node_modules
     environment:
-      POSTGRES_URI: postgres://admin:admin@dev-postgres:5432/blogslist
+      DATABASE_URL: postgres://admin:admin@dev-postgres:5432/blogslist
       PORT: 3001
       SECRET: secret
       DATABASE_SSL: false
