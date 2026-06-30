@@ -40,6 +40,18 @@ readingListRouter.post(
           .json({ error: "You cannot modify another user's reading list" });
       }
 
+      // Check if the blog is already present on the list
+      const existingEntry = await ReadingList.findOne({
+        where: {
+          userId: userId,
+          blogId: blogId,
+        },
+      });
+
+      if (existingEntry) {
+        return res.status(400).json({ error: "Blog entry has already been added" });
+      }
+
       // Add the blog to the reading list
       await ReadingList.create({
         userId,
@@ -81,6 +93,42 @@ readingListRouter.put(
       await readingListEntry.update({ read: req.body.read });
 
       return res.status(200).json(readingListEntry.toJSON());
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+// Remove a reading list entry
+readingListRouter.delete(
+  "/:id",
+  tokenExtractor,
+  activeSession,
+  validateId,
+  async (req, res, next) => {
+    try {
+      const entry = await ReadingList.findByPk(req.params.id);
+
+      // Check if the entry exists
+      if (!entry) {
+        return res.status(404).end();
+      }
+
+      // Confirm the reading list entry belongs to the currently logged in user
+      if (entry.userId !== req.decodedToken.id) {
+        return res
+          .status(401)
+          .json({ error: "You cannot modify another user's reading list" });
+      }
+
+      // Remove the entry from the user's reading list
+      await ReadingList.destroy({
+        where: {
+          id: entry.id,
+        },
+      });
+
+      return res.status(204).end();
     } catch (err) {
       next(err);
     }

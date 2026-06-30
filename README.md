@@ -218,6 +218,11 @@ docker compose -f ./docker-compose.test.yml down -v
   curl -X DELETE http://localhost:3001/api/users/<id>
   ```
 
+- Remove an entry from the reading list (a user can only modify its own reading list)
+  ```bash
+  curl -X DELETE http://localhost:3001/api/readinglists/<id> -H "Authorization: Bearer <token>"
+  ```
+
 - Logout
   ```bash
   curl -X DELETE http://localhost:3001/api/logout
