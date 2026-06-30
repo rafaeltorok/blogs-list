@@ -47,22 +47,3 @@ jobs:
           PORT: 3001
           SECRET: test_secret
           DATABASE_SSL: false
-        
-      - name: Start application
-        run: npm run start:test > app.log 2>&1 &
-        env:
-          TEST_POSTGRES_URI: postgresql://postgres:postgres@localhost:5432/test_db
-          PORT: 3001
-          SECRET: test_secret
-          DATABASE_SSL: false
-          
-      - name: Wait for application to be ready
-        run: npx wait-on http://localhost:3001 -t 30000
-      
-      - name: Print application logs on failure
-        if: failure()
-        run: cat app.log
-        
-      - name: Stop application
-        if: always()
-        run: pkill -f "node ./src/index.js" || true
