@@ -1,0 +1,41 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node ./src/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
+    "start:test": "cross-env NODE_ENV=test nodemon ./src/index.js",
+    "start:e2e": "cross-env NODE_ENV=e2e nodemon ./src/index.js",
+    "test": "cross-env NODE_ENV=test node --test --test-concurrency=1",
+    "lint": "eslint .",
+    "cli": "node ./cli.js",
+    "migration:down": "node ./scripts/rollback.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "lodash": "^4.17.21",
+    "nodemon": "^3.1.10",
+    "pg": "^8.21.0",
+    "sequelize": "^6.37.8",
+    "umzug": "^3.8.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "axios": "^1.18.0",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "prettier": "^3.8.3",
+    "supertest": "^7.1.4"
+  },
+  "type": "module"
+}
