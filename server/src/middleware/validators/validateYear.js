@@ -3,11 +3,9 @@ import { body, validationResult } from "express-validator";
 
 // Validations
 const validateYear = [
-  // Check if it is empty
-  body("year").exists().withMessage("Year is required"),
-
   // Prevents strings from passing through
   body("year")
+    .optional()
     .custom((value) => {
       return typeof value === "number";
     })
@@ -15,11 +13,13 @@ const validateYear = [
 
   // Check if the blog is no older than 1991
   body("year")
+    .optional()
     .isInt({ min: 1991 })
     .withMessage("A blog cannot be older than 1991"),
 
   // Check if the year does not surpass the current year
   body("year")
+    .optional()
     .isInt({ max: new Date().getFullYear() })
     .withMessage("The year cannot exceed the current year"),
 

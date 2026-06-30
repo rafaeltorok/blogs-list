@@ -3,10 +3,8 @@ import { DataTypes } from "sequelize";
 export async function up({ context: queryInterface }) {
   await queryInterface.addColumn("blogs", "year", {
     type: DataTypes.INTEGER,
+    defaultValue: new Date().getFullYear(),
     validator: {
-      notNull: {
-        msg: "Year is required",
-      },
       isInt: {
         msg: "Invalid year format",
       },

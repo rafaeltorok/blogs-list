@@ -184,7 +184,7 @@ docker compose -f ./docker-compose.test.yml down -v
 
 ### POST
 
-- Create a new blog (likes field is **optional**)
+- Create a new blog (likes and year fields are **optional**)
   ```bash
   curl -X POST http://localhost:3001/api/blogs -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{ "title":"My blog", "author":"The blogger", "url":"https://myblog.com", "year": 2000, "likes":10 }'
   ```
@@ -201,7 +201,7 @@ docker compose -f ./docker-compose.test.yml down -v
   curl -X POST http://localhost:3001/api/login -H "Content-Type: application/json" -d '{ "username":"admin", "password":"admin" }'
   ```
 
-- Adding a blog to your reading list (A **user** can only add a blog to its **own reading list**)
+- Adding a blog to your reading list (a user can only modify its own reading list)
   ```bash
   curl -X POST http://localhost:3001/api/readinglists -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{ "userId":1, "blogId":1 }'
   ```
@@ -230,7 +230,7 @@ docker compose -f ./docker-compose.test.yml down -v
   curl -X PUT http://localhost:3001/api/blogs/<id> -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{ "likes":10 }'
   ```
 
-- Modify the read status for a reading list entry (A user can only update the status for its **own reading list**)
+- Modify the read status for a reading list entry (a user can only modify its own reading list)
   ```bash
   curl -X PUT http://locahost:3001/api/readinglists/<id> -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{ "read":true }'
   ```

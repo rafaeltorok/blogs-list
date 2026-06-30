@@ -64,11 +64,8 @@ Blog.init(
     },
     year: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      defaultValue: new Date().getFullYear(),
       validate: {
-        notNull: {
-          msg: "Year is required",
-        },
         isInt: {
           msg: "Invalid year format",
         },
