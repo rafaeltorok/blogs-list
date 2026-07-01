@@ -16,6 +16,7 @@ import initialBlogs from "../data/initialBlogs.js";
 
 // Helper functions
 import addEntry from "../helpers/reading-lists/addEntry.js";
+import getReadingListLength from "../helpers/reading-lists/getReadingListLength.js";
 
 // Constants
 let loggedUser;
@@ -91,7 +92,7 @@ describe("the Reading Lists POST route", () => {
       200,
     );
 
-    // Get the updated user reading list entry
+    // Get the updated reading list entry
     userData = await api
       .get("/api/users/1")
       .expect(200)
@@ -138,13 +139,8 @@ describe("the Reading Lists POST route", () => {
     const newEntry = { userId: userData.body.id, blogId: blogToAdd.body.id };
     await addEntry(api, newEntry, loggedUser.token, 200);
 
-    // Get the current amount for the reading list entries
-    userData = await api
-      .get("/api/users/1")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const entriesLength = userData.body.readings.length;
+    // Get the current amount of entries
+    const originalEntriesLength = await getReadingListLength(api, userData.body.id);
 
     // Try to add the same blog again
     const duplicateEntryResponse = await addEntry(
@@ -154,14 +150,11 @@ describe("the Reading Lists POST route", () => {
       400,
     );
 
-    // Get the updated list entries
-    userData = await api
-      .get("/api/users/1")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+    // Get the current amount of entries
+    const currentEntriesLength = await getReadingListLength(api, userData.body.id);
 
     // Confirm the entry has been added only once
-    assert.strictEqual(userData.body.readings.length, entriesLength);
+    assert.strictEqual(originalEntriesLength, currentEntriesLength);
 
     // Confirm the error message is present within the response
     assert.match(duplicateEntryResponse.body.error, /blog entry has already been added/i);
@@ -193,13 +186,8 @@ describe("the Reading Lists POST route", () => {
     // Add the entry
     const newEntry = await addEntry(api, entryData, loginResponse.body.token, 401);
 
-    // Get the current user data
-    userData = await api
-      .get("/api/users/1")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const currentEntriesLength = userData.body.readings.length;
+    // Get the current amount of entries
+    const currentEntriesLength = await getReadingListLength(api, userData.body.id);
 
     // Assert no new entries have been added
     assert.strictEqual(originalEntriesLength, currentEntriesLength);

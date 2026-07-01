@@ -17,6 +17,7 @@ import initialBlogs from "../data/initialBlogs.js";
 
 // Helper functions
 import addEntry from "../helpers/reading-lists/addEntry.js";
+import getReadingListLength from "../helpers/reading-lists/getReadingListLength.js";
 
 // Constants
 let loggedUser;
@@ -106,14 +107,8 @@ describe("the Reading Lists DELETE route", () => {
       .set("Authorization", `Bearer ${loggedUser.token}`)
       .expect(204);
 
-    // Get the user updated reading list
-    userData = await api
-      .get("/api/users/1")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
     // Get the current amount of entries
-    const currentEntriesLength = userData.body.readings.length;
+    const currentEntriesLength = await getReadingListLength(api, userData.body.id);
 
     // Confirm the blog has been removed from the reading list
     assert.strictEqual(userData.body.readings[0], undefined);
@@ -142,13 +137,8 @@ describe("the Reading Lists DELETE route", () => {
       .expect(401)
       .expect("Content-Type", /application\/json/);
 
-    // Get the current user data
-    userData = await api
-      .get("/api/users/1")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const currentEntriesLength = userData.body.readings.length;
+    // Get the current amount of entries
+    const currentEntriesLength = await getReadingListLength(api, userData.body.id);
 
     // Assert no entries have been removed
     assert.strictEqual(originalEntriesLength, currentEntriesLength);
@@ -179,13 +169,8 @@ describe("the Reading Lists DELETE route", () => {
       .expect(401)
       .expect("Content-Type", /application\/json/);
 
-    // Get the current user data
-    userData = await api
-      .get("/api/users/1")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    const currentEntriesLength = userData.body.readings.length;
+    // Get the current amount of entries
+    const currentEntriesLength = await getReadingListLength(api, userData.body.id);
 
     // Assert no entries have been removed
     assert.strictEqual(originalEntriesLength, currentEntriesLength);
@@ -245,14 +230,8 @@ describe("the Reading Lists DELETE route", () => {
       .expect(401)
       .expect("Content-Type", /application\/json/);
 
-    // Get the user updated reading list
-    userData = await api
-      .get("/api/users/1")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
     // Get the current amount of entries
-    const currentEntriesLength = userData.body.readings.length;
+    const currentEntriesLength = await getReadingListLength(api, userData.body.id);
 
     // Confirm no entry has been removed
     assert.strictEqual(originalEntriesLength, currentEntriesLength);
