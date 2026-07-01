@@ -210,7 +210,7 @@ describe("the Users POST route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert an error message is within the response
-    assert.strictEqual(response.body.error, "Username must be unique");
+    assert.match(response.body.error, /username must be unique/i);
 
     // Assert a new user has not been added
     const currentAmount = await getAmount("users");

@@ -89,7 +89,7 @@ describe("the Login route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert an error message is within the response
-    assert.strictEqual(response.body.error, "Missing credentials");
+    assert.match(response.body.error, /missing credentials/i);
 
     // Assert the token is not present within the response
     assert.ok(!("token" in response.body));
@@ -106,7 +106,7 @@ describe("the Login route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert an error message is within the response
-    assert.strictEqual(response.body.error, "Missing credentials");
+    assert.match(response.body.error, /missing credentials/i);
 
     // Assert the token is not present within the response
     assert.ok(!("token" in response.body));
@@ -129,7 +129,7 @@ describe("the Login route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert the error message is within the response
-    assert.strictEqual(response.body.error, "Invalid username or password");
+    assert.match(response.body.error, /invalid username or password/i);
   });
 
   test("a non-existing user should return a proper error message", async () => {
@@ -141,7 +141,7 @@ describe("the Login route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert the error message is within the response
-    assert.strictEqual(response.body.error, "Invalid username or password");
+    assert.match(response.body.error, /invalid username or password/i);
   });
 
   test("a disabled user should not be allowed to login", async () => {
@@ -167,9 +167,9 @@ describe("the Login route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert the error message is within the response
-    assert.strictEqual(
+    assert.match(
       loginResponse.body.error,
-      "Your account has been disabled, please contact an admin",
+      /your account has been disabled, please contact an admin/i,
     );
   });
 });

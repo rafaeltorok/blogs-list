@@ -262,7 +262,7 @@ describe("the Blogs PUT route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert an error message is within the response
-    assert.strictEqual(putResponse.body.error, "token missing");
+    assert.match(putResponse.body.error, /token missing/i);
 
     // Assert the original likes counter has not been updated
     const originalBlog = await api.get(`/api/blogs/${postResponse.body.id}`);

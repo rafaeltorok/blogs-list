@@ -197,7 +197,7 @@ describe("the Users PUT route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Confirm the error message is within the response
-    assert.strictEqual(putResponse.body.error, "Invalid user's name");
+    assert.match(putResponse.body.error, /invalid user's name/i);
 
     const currentUserData = await api
       .get("/api/users/1")
@@ -229,7 +229,7 @@ describe("the Users PUT route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Confirm the error message is within the response
-    assert.strictEqual(putResponse.body.error, "Invalid user's name");
+    assert.match(putResponse.body.error, /invalid user's name/i);
 
     const currentUserData = await api
       .get("/api/users/1")

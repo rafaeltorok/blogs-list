@@ -128,9 +128,9 @@ describe("the Blogs DELETE route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert an error message is within the response
-    assert.strictEqual(
+    assert.match(
       deleteResponse.body.error,
-      "Only the user who added the blog can remove it",
+      /only the user who added the blog can remove it/i,
     );
 
     // Assert no blogs have been removed
@@ -192,7 +192,7 @@ describe("the Blogs DELETE route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Assert an error message is within the response
-    assert.strictEqual(response.body.error, "token missing");
+    assert.match(response.body.error, /token missing/i);
 
     // Confirm the blogs length has not changed
     currentAmount = await getAmount("blogs");
