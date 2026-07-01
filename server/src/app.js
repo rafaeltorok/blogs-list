@@ -32,10 +32,7 @@ app.use("/api/logout", logoutRouter);
 app.use("/api/health", healthRouter);
 
 // Route to reset all data tables for testing
-if (
-  process.env.NODE_ENV === "test" ||
-  process.env.NODE_ENV === "e2e"
-) {
+if (process.env.NODE_ENV === "test" || process.env.NODE_ENV === "e2e") {
   app.use("/api/reset", testsRouter);
 }
 
@@ -43,4 +40,3 @@ if (
 app.use(errorHandler);
 
 export default app;
-

@@ -37,11 +37,9 @@ loginRouter.post("/", async (req, res, next) => {
 
     // Check if the user is disabled
     if (user.disabled) {
-      return res
-        .status(403)
-        .json({
-          error: "Your account has been disabled, please contact an admin",
-        });
+      return res.status(403).json({
+        error: "Your account has been disabled, please contact an admin",
+      });
     }
 
     // Generates the token
@@ -59,7 +57,9 @@ loginRouter.post("/", async (req, res, next) => {
     });
 
     // Return the token alongside the non-sensitive user information
-    return res.status(200).send({ token, username: user.username, name: user.name });
+    return res
+      .status(200)
+      .send({ token, username: user.username, name: user.name });
   } catch (err) {
     next(err);
   }

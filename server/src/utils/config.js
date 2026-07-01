@@ -20,4 +20,3 @@ switch (process.env.NODE_ENV) {
 const SECRET = process.env.SECRET || "secret";
 
 export { PORT, DATABASE_URL, SECRET };
-

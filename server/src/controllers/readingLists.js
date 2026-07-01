@@ -49,7 +49,9 @@ readingListRouter.post(
       });
 
       if (existingEntry) {
-        return res.status(400).json({ error: "Blog entry has already been added" });
+        return res
+          .status(400)
+          .json({ error: "Blog entry has already been added" });
       }
 
       // Add the blog to the reading list

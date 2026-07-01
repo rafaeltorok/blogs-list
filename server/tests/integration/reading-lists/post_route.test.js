@@ -39,7 +39,10 @@ before(async () => {
   // Log in the user and store the auth token
   const loginResponse = await api
     .post("/api/login")
-    .send({ username: initialUsers[0].username, password: initialUsers[0].password })
+    .send({
+      username: initialUsers[0].username,
+      password: initialUsers[0].password,
+    })
     .expect(200)
     .expect("Content-Type", /application\/json/);
 
@@ -81,7 +84,12 @@ describe("the Reading Lists POST route", () => {
 
     // Add the blog to the currently logged user's reading list
     const newEntry = { userId: userData.body.id, blogId: blogToAdd.body.id };
-    const newEntryResponse = await addEntry(api, newEntry, loggedUser.token, 200);
+    const newEntryResponse = await addEntry(
+      api,
+      newEntry,
+      loggedUser.token,
+      200,
+    );
 
     // Get the updated user reading list entry
     userData = await api
@@ -90,24 +98,28 @@ describe("the Reading Lists POST route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Confirm the blog is present on the reading list
-    assert.deepStrictEqual({
-      id: blogToAdd.body.id,
-      title: blogToAdd.body.title,
-      author: blogToAdd.body.author,
-      url: blogToAdd.body.url,
-      likes: blogToAdd.body.likes,
-    }, {
-      id: userData.body.readings[0].id,
-      title: userData.body.readings[0].title,
-      author: userData.body.readings[0].author,
-      url: userData.body.readings[0].url,
-      likes: userData.body.readings[0].likes,
-    });
+    assert.deepStrictEqual(
+      {
+        id: blogToAdd.body.id,
+        title: blogToAdd.body.title,
+        author: blogToAdd.body.author,
+        url: blogToAdd.body.url,
+        likes: blogToAdd.body.likes,
+      },
+      {
+        id: userData.body.readings[0].id,
+        title: userData.body.readings[0].title,
+        author: userData.body.readings[0].author,
+        url: userData.body.readings[0].url,
+        likes: userData.body.readings[0].likes,
+      },
+    );
 
     // Confirm the response message has the correct data on it
     assert.strictEqual(
       newEntryResponse.body.message,
-      `${blogToAdd.body.title} by ${blogToAdd.body.author} was added to the ${userData.body.name}'s reading list`);
+      `${blogToAdd.body.title} by ${blogToAdd.body.author} was added to the ${userData.body.name}'s reading list`,
+    );
   });
 
   test("a duplicate entry should not be added", async () => {
@@ -135,7 +147,12 @@ describe("the Reading Lists POST route", () => {
     const entriesLength = userData.body.readings.length;
 
     // Try to add the same blog again
-    const duplicateEntryResponse = await addEntry(api, newEntry, loggedUser.token, 400);
+    const duplicateEntryResponse = await addEntry(
+      api,
+      newEntry,
+      loggedUser.token,
+      400,
+    );
 
     // Get the updated list entries
     userData = await api
@@ -149,6 +166,7 @@ describe("the Reading Lists POST route", () => {
     // Confirm the error message is present within the response
     assert.strictEqual(
       duplicateEntryResponse.body.error,
-      "Blog entry has already been added");
+      "Blog entry has already been added",
+    );
   });
 });
