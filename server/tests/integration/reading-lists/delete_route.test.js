@@ -107,8 +107,14 @@ describe("the Reading Lists DELETE route", () => {
       .set("Authorization", `Bearer ${loggedUser.token}`)
       .expect(204);
 
+    // Get the updated reading list
+    userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
     // Get the current amount of entries
-    const currentEntriesLength = await getReadingListLength(api, userData.body.id);
+    const currentEntriesLength = userData.body.readings.length;
 
     // Confirm the blog has been removed from the reading list
     assert.strictEqual(userData.body.readings[0], undefined);
