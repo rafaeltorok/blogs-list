@@ -164,9 +164,135 @@ describe("the Reading Lists POST route", () => {
     assert.strictEqual(userData.body.readings.length, entriesLength);
 
     // Confirm the error message is present within the response
-    assert.strictEqual(
-      duplicateEntryResponse.body.error,
-      "Blog entry has already been added",
-    );
+    assert.match(duplicateEntryResponse.body.error, /blog entry has already been added/i);
+  });
+
+  test("a user should not be able to add an entry to another user's reading list", async () => {
+    const blogToAdd = await api
+      .get("/api/blogs/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // Get the user to add a new entry to the reading list
+    let userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const originalEntriesLength = userData.body.readings.length;
+
+    const entryData = { userId: userData.body.id, blogId: blogToAdd.body.id };
+
+    // Login as another user
+    const loginResponse = await api
+      .post("/api/login")
+      .send({ username: initialUsers[1].username, password: initialUsers[1].password })
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // Add the entry
+    const newEntry = await addEntry(api, entryData, loginResponse.body.token, 401);
+
+    // Get the current user data
+    userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const currentEntriesLength = userData.body.readings.length;
+
+    // Assert no new entries have been added
+    assert.strictEqual(originalEntriesLength, currentEntriesLength);
+
+    // Assert there is an error within the response
+    assert.match(newEntry.body.error, /you cannot modify another user's reading list/i);
+  });
+
+  test("an invalid user id should return a proper status code", async () => {
+    const blogToAdd = await api
+      .get("/api/blogs/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // Add an invalid user id
+    const entryData = { userId: 0, blogId: blogToAdd.body.id };
+
+    // Assert the correct status code is returned
+    await api
+      .post("/api/readinglists")
+      .send(entryData)
+      .set("Authorization", `Bearer ${loggedUser.token}`)
+      .expect(404);
+  });
+
+  test("an invalid blog id should return a proper status code", async () => {
+    const userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // Add an invalid user id
+    const entryData = { userId: userData.body.id, blogId: 0 };
+
+    // Assert the correct status code is returned
+    await api
+      .post("/api/readinglists")
+      .send(entryData)
+      .set("Authorization", `Bearer ${loggedUser.token}`)
+      .expect(404);
+  });
+
+  test("a non-logged user should return a proper error message", async () => {
+    const userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const blogToAdd = await api
+      .get("/api/blogs/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const entryData = { userId: userData.body.id, blogId: blogToAdd.body.id };
+
+    // Add the entry without a token present
+    const newEntry = await addEntry(api, entryData, undefined, 401);
+
+    // Assert there is an error within the response
+    assert.match(newEntry.body.error, /invalid token/i);
+  });
+
+  test("an expired token should return a proper error message", async () => {
+    const userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const blogToAdd = await api
+      .get("/api/blogs/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const entryData = { userId: userData.body.id, blogId: blogToAdd.body.id };
+
+    // Login
+    const loginResponse = await api
+      .post("/api/login")
+      .send({
+        username: initialUsers[1].username,
+        password: initialUsers[1].password,
+      });
+
+    // Logout the user to expire the current auth token
+    await api
+      .delete("/api/logout")
+      .set("Authorization", `Bearer ${loginResponse.body.token}`)
+      .expect(200);
+
+    // Add the entry with the expired token
+    const newEntry = await addEntry(api, entryData, loginResponse.body.token, 401);
+
+    // Assert there is an error within the response
+    assert.match(newEntry.body.error, /token expired/i);
   });
 });
