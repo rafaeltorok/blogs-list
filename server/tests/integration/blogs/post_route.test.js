@@ -20,7 +20,7 @@ import {
   maxTitleLength,
   minAuthorLength,
   maxAuthorLength,
-} from "../../data/minMaxLengths.js";
+} from "../helpers/minMaxLengths.js";
 
 const api = supertest(app);
 
