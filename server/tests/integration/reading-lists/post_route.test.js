@@ -13,8 +13,11 @@ import app from "../../../src/app.js";
 import ReadingLists from "../../../src/models/readingList.js";
 
 // Test data
-import initialUsers from "../../data/initialUsers.js";
-import initialBlogs from "../../data/initialBlogs.js";
+import initialUsers from "../data/initialUsers.js";
+import initialBlogs from "../data/initialBlogs.js";
+
+// Helper functions
+import addEntry from "../helpers/reading-lists/addEntry.js";
 
 // Constants
 let loggedUser;
@@ -62,6 +65,10 @@ after(async () => {
 
 // Tests
 describe("the Reading Lists POST route", () => {
+  beforeEach(async () => {
+    await ReadingLists.truncate({ restartIdentity: true });
+  });
+
   test("a blog can be added to a user's reading list", async () => {
     const blogToAdd = await api
       .get("/api/blogs/1")
@@ -75,15 +82,8 @@ describe("the Reading Lists POST route", () => {
       .expect("Content-Type", /application\/json/);
 
     // Add the blog to the currently logged user's reading list
-    const newEntryResponse = await api
-      .post("/api/readinglists")
-      .send({
-        userId: userData.body.id,
-        blogId: blogToAdd.body.id,
-      })
-      .set("Authorization", `Bearer ${loggedUser.token}`)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+    const newEntry = { userId: userData.body.id, blogId: blogToAdd.body.id };
+    const newEntryResponse = await addEntry(api, newEntry, loggedUser.token, 200);
 
     // Get the updated user reading list entry
     userData = await api
@@ -110,5 +110,47 @@ describe("the Reading Lists POST route", () => {
     assert.strictEqual(
       newEntryResponse.body.message,
       `${blogToAdd.body.title} by ${blogToAdd.body.author} was added to the ${userData.body.name}'s reading list`);
+  });
+
+  test("a duplicate entry should not be added", async () => {
+    const blogToAdd = await api
+      .get("/api/blogs/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // Get the user to add a new entry to the reading list
+    let userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // Add the blog to the currently logged user's reading list
+    const newEntry = { userId: userData.body.id, blogId: blogToAdd.body.id };
+    await addEntry(api, newEntry, loggedUser.token, 200);
+
+    // Get the current amount for the reading list entries
+    userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const entriesLength = userData.body.readings.length;
+
+    // Try to add the same blog again
+    const duplicateEntryResponse = await addEntry(api, newEntry, loggedUser.token, 400);
+
+    // Get the updated list entries
+    userData = await api
+      .get("/api/users/1")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // Confirm the entry has been added only once
+    assert.strictEqual(userData.body.readings.length, entriesLength);
+
+    // Confirm the error message is present within the response
+    assert.strictEqual(
+      duplicateEntryResponse.body.error,
+      "Blog entry has already been added");
   });
 });
