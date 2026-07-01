@@ -13,8 +13,8 @@ import app from "../../../src/app.js";
 import { Blog, User } from "../../../src/models/index.js";
 
 // Test data
-import initialBlogs from "../../data/initialBlogs.js";
-import initialUsers from "../../data/initialUsers.js";
+import initialBlogs from "../data/initialBlogs.js";
+import initialUsers from "../data/initialUsers.js";
 
 const api = supertest(app);
 

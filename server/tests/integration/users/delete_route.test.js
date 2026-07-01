@@ -9,7 +9,9 @@ import app from "../../../src/app.js";
 
 // Models
 import User from "../../../src/models/user.js";
-import initialUsers from "../../data/initialUsers.js";
+
+// Test data
+import initialUsers from "../data/initialUsers.js";
 
 const api = supertest(app);
 

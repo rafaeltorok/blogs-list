@@ -11,8 +11,10 @@ import app from "../../../src/app.js";
 
 // Models
 import Blog from "../../../src/models/blog.js";
-import initialBlogs from "../../data/initialBlogs.js";
-import initialUsers from "../../data/initialUsers.js";
+
+// Test data
+import initialBlogs from "../data/initialBlogs.js";
+import initialUsers from "../data/initialUsers.js";
 
 // Constants
 import {
