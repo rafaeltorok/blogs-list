@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 // Test Dependencies
 import { test, beforeEach, describe, before, after } from "node:test";
 import assert from "node:assert";
