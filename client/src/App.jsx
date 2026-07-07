@@ -150,7 +150,6 @@ function App() {
 
       // Update on the remote server
       await blogService.updateData(blogToUpdate.id, {
-        ...blogToUpdate,
         likes: blogToUpdate.likes + 1,
       });
     } catch (err) {
