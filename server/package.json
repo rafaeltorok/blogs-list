@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=production node ./src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
     "start:test": "cross-env NODE_ENV=test nodemon ./src/index.js",
-    "start:e2e": "cross-env NODE_ENV=e2e nodemon ./src/index.js",
+    "start:e2e": "cross-env NODE_ENV=e2e node ./src/index.js",
     "test": "cross-env NODE_ENV=test node --test --test-concurrency=1",
     "lint": "eslint .",
     "cli": "node ./cli.js",
