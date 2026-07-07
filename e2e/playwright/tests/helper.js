@@ -1,5 +1,5 @@
 const resetDatabase = async(page, request) => {
-  await request.post('/api/testing/reset')
+  await request.post('/api/reset')
   await page.goto('/')
 }
 
