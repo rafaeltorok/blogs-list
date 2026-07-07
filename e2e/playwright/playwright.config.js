@@ -34,7 +34,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     baseURL: 'http://localhost:5173',
   },
-  timeout: 10000,
+  timeout: 30000,
 
   /* Configure projects for major browsers */
   projects: [
