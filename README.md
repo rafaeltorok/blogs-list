@@ -281,6 +281,44 @@ Run only the Login route test suite
 npm run test -- ./tests/integration/login_route.test.js
 ```
 
+### E2E (Playwright)
+
+- Start the server
+  ```bash
+  cd ./server && npm run start:e2e
+  ```
+
+- Start the client
+  ```bash
+  cd ./client && npm run dev
+  ```
+
+- Enter the Playwright folder
+  ```bash
+  cd ./e2e/playwright
+  ```
+
+- Install dependencies
+  ```bash
+  npm install
+  ```
+
+- Run the tests
+
+  - on CLI
+    ```bash
+    npm run test
+    ```
+
+  - on UI mode
+    ```bash
+    npm run test:ui
+    ```
+
+  - on Report mode
+    ```bash
+    npm run test:report
+    ```
 
 ## ESLint
 
