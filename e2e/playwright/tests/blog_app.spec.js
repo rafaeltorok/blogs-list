@@ -4,7 +4,7 @@ const { resetDatabase, createUser, loginWith, addBlog } = require('./helper.js')
 describe('Blogs List app', () => {
   beforeEach(async({ page, request }) => {
     await resetDatabase(page, request)
-    await createUser(request, 'admin', 'The Administrator', 'password')
+    await createUser(request, 'admin@email.com', 'Administrator', 'password')
     await page.goto('/')
   })
 
@@ -12,35 +12,35 @@ describe('Blogs List app', () => {
     const heading = page.getByRole('heading', { name: 'Blogs List', level: 1 })
     await expect(heading).toBeVisible()
 
-    const footerLocator = page.locator('footer').getByText('Blogs List app, from the FullStackOpen course by MOOC Finland 2025.')
+    const footerLocator = page.locator('footer').getByText('Blogs List app, from the FullStackOpen Databases course by MOOC Finland 2026.')
     await expect(footerLocator).toBeVisible()
   })
 
-  test('Login form is shown', async ({ page }) => {
+  test('login form is shown', async ({ page }) => {
     await expect(page.getByLabel('username')).toBeVisible()
     await expect(page.getByLabel('password')).toBeVisible()
     await expect(page.getByRole('button', { name: 'login' })).toBeVisible()
   })
 
   test('login fails with the wrong password', async({ page, request }) => {
-    await resetDatabase(page, request, 'admin', 'The Administrator', 'password')
-    await loginWith(page, 'admin', 'wrong')
+    await resetDatabase(page, request, 'admin@email.com', 'Administrator', 'password')
+    await loginWith(page, 'admin@email.com', 'wrong')
 
     const errorDiv = page.locator('.error-message')
     await expect(errorDiv).toContainText('Incorrect credentials')
     await expect(errorDiv).toHaveCSS('border-style', 'solid')
     await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
 
-    await expect(page.getByText('The Administrator logged in')).not.toBeVisible()
+    await expect(page.getByText('Administrator logged in')).not.toBeVisible()
   })
 
   describe('when logged in', () => {
     beforeEach(async({ page }) => {
-      await loginWith(page, 'admin', 'password')
+      await loginWith(page, 'admin@email.com', 'password')
     })
 
     test('user can log in', async ({ page }) => {
-      await expect(page.getByText('The Administrator logged in')).toBeVisible()
+      await expect(page.getByText('Administrator logged in')).toBeVisible()
     })
 
     test('a new blog can be created', async ({ page }) => {
@@ -52,7 +52,7 @@ describe('Blogs List app', () => {
       await addBlog(page, 'New blog', 'Playwright', 'http://testing-blogs.com')
       await page.getByRole('button', { name: 'show' }).click()
       await page.getByRole('button', { name: 'like' }).click()
-      await expect(page.getByText('1')).toBeVisible()
+      await expect(page.getByText('1', { exact: true })).toBeVisible()
     })
 
     test('a blog can be deleted', async({ page }) => {
@@ -70,7 +70,7 @@ describe('Blogs List app', () => {
 
   describe('and several blogs exists', () => {
     beforeEach(async({ page }) => {
-      await loginWith(page, 'admin', 'password')
+      await loginWith(page, 'admin@email.com', 'password')
       await addBlog(page, 'New blog', 'Playwright', 'http://testing-blogs.com')
       await addBlog(page, 'Another blog', 'Playwright', 'http://testing-blogs.com')
       await addBlog(page, 'One more blog', 'Playwright', 'http://testing-blogs.com')
@@ -93,15 +93,15 @@ describe('Blogs List app', () => {
 
       await firstBlog.getByRole('button', { name: 'show' }).click()
       let userRow = firstBlog.locator('tr', { has: page.locator('th:text("User:")') })
-      await expect(userRow.locator('td')).toContainText('The Administrator')
+      await expect(userRow.locator('td')).toContainText('Administrator')
       
       await secondBlog.getByRole('button', { name: 'show' }).click()
       userRow = secondBlog.locator('tr', { has: page.locator('th:text("User:")') })
-      await expect(userRow.locator('td')).toContainText('The Administrator')
+      await expect(userRow.locator('td')).toContainText('Administrator')
       
       await thirdBlog.getByRole('button', { name: 'show' }).click()
       userRow = thirdBlog.locator('tr', { has: page.locator('th:text("User:")') })
-      await expect(userRow.locator('td')).toContainText('The Administrator')
+      await expect(userRow.locator('td')).toContainText('Administrator')
     })
 
     test('one of those can be liked', async({ page }) => {
@@ -154,20 +154,20 @@ describe('Blogs List app', () => {
 
   describe('when there are multiple users', () => {
     beforeEach(async({ page, request }) => {
-      await createUser(request, 'test', 'The Tester', 'password')
-      await loginWith(page, 'test', 'password')
+      await createUser(request, 'test@email.com', 'The Tester', 'password')
+      await loginWith(page, 'test@email.com', 'password')
       await addBlog(page, 'New blog', 'Playwright', 'http://testing-blogs.com')
     })
 
-    test('only the user who created a blog see the delete button', async({ page }) => {
-      // First check if the user who added can see the button inside the Blog data table
+    test('only the user who created a blog can see the delete button', async({ page }) => {
+      // Confirm the user who added it, has the button being visible
       const blog = page.getByRole('table').filter({ hasText: 'New blog by Playwright' })
       await blog.getByRole('button', { name: 'show' }).click()
       await expect(blog.getByRole('button', { name: 'delete' })).toBeAttached()
 
       // Login as another user to check if the button is not there
       await page.getByRole('button', { name: 'logout' }).click()
-      await loginWith(page, 'admin', 'password')
+      await loginWith(page, 'admin@email.com', 'password')
 
       await expect(blog.getByRole('button', { name: 'delete' })).not.toBeAttached()
     })
