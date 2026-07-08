@@ -19,19 +19,23 @@ const app = express();
 
 app.use(express.json());
 
+// Serve the static build for the frontend
+app.use(express.static("dist"));
+
+// Data routes
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", userRouter);
 app.use("/api/authors", authorsRouter);
 app.use("/api/readinglists", readingListRouter);
 
-// Session routes
+// Session-related routes
 app.use("/api/login", loginRouter);
 app.use("/api/logout", logoutRouter);
 
 // Server health check route
 app.use("/api/health", healthRouter);
 
-// Route to reset all data tables for testing
+// Truncate all tables when running tests
 if (process.env.NODE_ENV === "test" || process.env.NODE_ENV === "e2e") {
   app.use("/api/reset", testsRouter);
 }

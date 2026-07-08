@@ -8,6 +8,8 @@
 - [Docker](#docker)
 - [CRUD operations](#crud-operations)
 - [Tests](#tests)
+  - [Integration tests](#integration-tests)
+  - [E2E (Playwright)](#e2e-playwright)
 - [ESLint](#eslint)
 
 
@@ -36,23 +38,51 @@ SECRET=<insert_your_secret_passphrase_here>
 DATABASE_SSL=true
 ```
 
-- `DATABASE_SSL` should only be set to `false` inside of Docker networks.
+- `DATABASE_SSL` should be set to `false` inside of Docker networks.
 
 
 ## Usage
 
-Start the Express server
+### Server
+
+Enter the server folder
 ```bash
-cd ./server && npm run start
+cd ./server
+```
+
+Production mode
+```bash
+npm run start
+```
+
+- API requests on http://localhost:3001/api
+- Web UI on http://localhost:3001
+
+Test mode (running the test database from the integration tests)
+```bash
+npm run start:test
+```
+
+E2E mode (for using with the E2E tests)
+```bash
+npm run start:e2e
+```
+
+### Client
+
+Enter the client folder
+```bash
+cd ./client
 ```
 
 Start the Vite server
 ```bash
-cd ./client && npm run dev
+npm run dev
 ```
 
-- API requests on http://localhost:3001/api
 - Web UI access on http://localhost:5173
+
+### 
 
 ### CLI
 
